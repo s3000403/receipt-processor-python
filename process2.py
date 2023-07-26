@@ -3,7 +3,7 @@ import numpy as np
 from imutils.perspective import four_point_transform
 import imutils
 #import pytesseract
-from helpers import open_image
+from helpers import open_image_cv
 from PIL import Image
 import cv2
 
@@ -62,7 +62,7 @@ def extract_receipt(filename,
     debug = 1
 
     # load the input image from disk
-    orig = open_image(filename, astype='cv')
+    orig = open_image_cv(filename)
 
     receiptBounds = identify_receipt_bounds(orig, 
                     blur_size=blur_size, 
@@ -86,7 +86,7 @@ def extract_receipt(filename,
         print('Plotting debug plots')
         output = orig.copy()
         receiptCnt = receiptBounds.reshape(4,1,2).round().astype(int)
-        cv2.drawContours(output, [receiptCnt], -1, (0, 255, 0), 5)
+        cv2.drawContours(output, [receiptCnt], -1, (0, 255, 0), 10)
         cv2.imshow("Receipt Outline", imutils.resize(output, width=resize_width))
         cv2.imshow("Receipt Transform", imutils.resize(receipt, width=resize_width))
         
