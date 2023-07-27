@@ -19,9 +19,9 @@ def test_many_receipts():
                                 ('data2\\230717.HEIC',4788268),
                               ]
     test__blur_size        = [5,7,9,11]
-    test__canny_min_thresh = [ 75, 25, 50,100,125] #[ 75, 25, 50,100,125] np.linspace(25,200,15)
-    test__canny_max_thresh = [200,150,175,225,250] #[200,150,175,225,250] np.linspace(100,300,15)
-    test__resize_width     = [500,300,400,600]
+    test__canny_min_thresh = [ 75, 50,100]
+    test__canny_max_thresh = [200,175,225]
+    test__resize_width     = [500,200,300,400,600]
 
     data = OrderedDict()
 
