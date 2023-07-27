@@ -1,4 +1,6 @@
 
+*.pyc
+
 *.heic
 *.png
 *.jpg
