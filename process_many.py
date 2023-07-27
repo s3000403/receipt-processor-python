@@ -1,4 +1,4 @@
-
+import numpy as np
 import process_receipt as pr
 
 def test_many_receipts():

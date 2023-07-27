@@ -62,7 +62,7 @@ def extract_receipt(filename,
                     canny_max_thresh=200,
                     resize_width = 500,
                     ):
-    debug = 1
+    debug = 0
 
     # load the input image from disk
     orig = open_image_cv(filename)
