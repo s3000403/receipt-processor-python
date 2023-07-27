@@ -35,8 +35,8 @@ def identify_receipt_bounds(orig,
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
 
     # initialize a contour that corresponds to the receipt outline
-    receiptCnt = np.array([])
-    # loop over the contours
+    receiptCnt = np.ndarray((0,1,2))
+    # loop over the contours (from largest to smallest since we sorted)
     for c in cnts:
         # approximate the contour
         peri = cv2.arcLength(c, True)
@@ -44,12 +44,15 @@ def identify_receipt_bounds(orig,
         # if our approximated contour has four points, then we can
         # assume we have found the outline of the receipt
         x,y,w,h = cv2.boundingRect(c)
-        #print(len(approx), cv2.contourArea(c),w*h,w,h,(w*h-cv2.contourArea(c))/cv2.contourArea(c))
+        # if this contour is the largest 4 sided polygon use this as the receipt
         if len(approx) == 4:
             receiptCnt = approx
             break
+    # if we failed to find a valid contour return the empty contour
     if len(receiptCnt)==0:
         return receiptCnt
+    # else reshape the contour into bounds (scaled back to the original image size) 
+    # and return these bounds
     receiptBounds = receiptCnt.reshape(4, 2) * ratio
     return receiptBounds
     
@@ -70,7 +73,7 @@ def extract_receipt(filename,
                     canny_max_thresh=canny_max_thresh,
                     resize_width = resize_width,
                     )
-    print(len(receiptBounds))
+    
     # if the receipt contour is empty then our script could not find the
     # outline and we should be notified
     if len(receiptBounds)==0:
@@ -79,6 +82,7 @@ def extract_receipt(filename,
     # apply a four-point perspective transform to the *original* image to
     # obtain a top-down bird's-eye view of the receipt
     receipt = four_point_transform(orig, receiptBounds)
+    #print(receipt.shape)
     
     # check to see if we should draw the contour of the receipt on the
     # image and then display it to our screen
@@ -106,9 +110,6 @@ if __name__=='__main__':
     #filename = 'data2\\230702.HEIC'
     #filename = 'data2\\230717.HEIC'
     receipt = extract_receipt(filename, blur_size=5, resize_width=300)
-    #print(receipt.shape)
     #cv2.imshow("Receipt", imutils.resize(receipt, width=300))
     #cv2.waitKey()
     #cv2.destroyAllWindows()
-
-    #test__extract_receipt()
