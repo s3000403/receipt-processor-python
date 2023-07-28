@@ -40,13 +40,13 @@ def test_many_receipts():
                     print('o',end='')
                     continue
                 print('x',end='')
-                rec = pr.extract_receipt(filename, 
-                                    blur_size=blur_size, 
-                                    canny_min_thresh=canny_minT, 
-                                    canny_max_thresh=canny_maxT,
-                                    resize_width=resize_width
-                                    )
-                h,w = rec.shape[:2]
+                receipt, receiptBounds = pr.extract_receipt(filename, 
+                                                            blur_size=blur_size, 
+                                                            canny_min_thresh=canny_minT, 
+                                                            canny_max_thresh=canny_maxT,
+                                                            resize_width=resize_width
+                                                            )
+                h,w = receipt.shape[:2]
 #                if h*w>3000*1000:
 #                    sizes.append(h*w)
                 if h*w>=thesh:
@@ -54,7 +54,7 @@ def test_many_receipts():
                 else:
                     success=0
                 passFail.append(success)
-                #print(rec.shape)
+                #print(receipt.shape)
                 data.setdefault('filename',[])
                 data.setdefault('blur_size',[])
                 data.setdefault('canny_minT',[])

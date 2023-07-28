@@ -77,7 +77,7 @@ def extract_receipt(filename,
     # if the receipt contour is empty then our script could not find the
     # outline and we should be notified
     if len(receiptBounds)==0:
-        return np.ndarray((0,0,3))
+        return np.ndarray((0,0,3)), receiptBounds
 
     # apply a four-point perspective transform to the *original* image to
     # obtain a top-down bird's-eye view of the receipt
@@ -96,7 +96,7 @@ def extract_receipt(filename,
         
         cv2.waitKey()
         cv2.destroyAllWindows()
-    return receipt
+    return receipt, receiptBounds
 
 if __name__=='__main__':
     filename = 'data2\\220728.HEIC'
@@ -109,7 +109,7 @@ if __name__=='__main__':
     #filename = 'data2\\230619.HEIC'
     #filename = 'data2\\230702.HEIC'
     #filename = 'data2\\230717.HEIC'
-    receipt = extract_receipt(filename, blur_size=5, resize_width=300)
-    #cv2.imshow("Receipt", imutils.resize(receipt, width=300))
-    #cv2.waitKey()
-    #cv2.destroyAllWindows()
+    receipt, receiptBounds = extract_receipt(filename, blur_size=5, resize_width=300)
+    cv2.imshow("Receipt", imutils.resize(receipt, width=300))
+    cv2.waitKey()
+    cv2.destroyAllWindows()
