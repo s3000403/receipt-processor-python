@@ -7,6 +7,10 @@ from helpers import open_image_cv
 from PIL import Image
 import cv2
 
+NULL_CONTOUR = np.ndarray((0,1,2))
+NULL_BOUNDS  = np.ndarray((0,2))
+NULL_IMAGE   = np.ndarray((0,0,3))
+
 # Based on following site: https://pyimagesearch.com/2021/10/27/automatically-ocring-receipts-and-scans/
 
 def identify_receipt_bounds(orig, 
@@ -35,7 +39,7 @@ def identify_receipt_bounds(orig,
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
 
     # initialize a contour that corresponds to the receipt outline
-    receiptCnt = np.ndarray((0,1,2))
+    receiptCnt = NULL_CONTOUR
     # loop over the contours (from largest to smallest since we sorted)
     for c in cnts:
         # approximate the contour
@@ -50,7 +54,7 @@ def identify_receipt_bounds(orig,
             break
     # if we failed to find a valid contour return the empty contour
     if len(receiptCnt)==0:
-        return receiptCnt
+        return NULL_BOUNDS
     # else reshape the contour into bounds (scaled back to the original image size) 
     # and return these bounds
     receiptBounds = receiptCnt.reshape(4, 2) * ratio
@@ -77,7 +81,7 @@ def extract_receipt(filename,
     # if the receipt contour is empty then our script could not find the
     # outline and we should be notified
     if len(receiptBounds)==0:
-        return np.ndarray((0,0,3)), receiptBounds
+        return NULL_IMAGE, NULL_BOUNDS
 
     # apply a four-point perspective transform to the *original* image to
     # obtain a top-down bird's-eye view of the receipt
@@ -110,6 +114,11 @@ if __name__=='__main__':
     #filename = 'data2\\230702.HEIC'
     #filename = 'data2\\230717.HEIC'
     receipt, receiptBounds = extract_receipt(filename, blur_size=5, resize_width=300)
-    cv2.imshow("Receipt", imutils.resize(receipt, width=300))
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    
+    if len(receipt):
+        print('Receipt identified!')
+        cv2.imshow("Receipt", imutils.resize(receipt, width=300))
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+    else:
+        print('No receipt identified')
