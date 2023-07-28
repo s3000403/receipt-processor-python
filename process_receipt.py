@@ -1,11 +1,14 @@
 # import the necessary packages
 import numpy as np
+import matplotlib.pyplot as plt
+
 from imutils.perspective import four_point_transform
 import imutils
-#import pytesseract
-from helpers import open_image_cv
+from helpers import open_image_cv, plot_image_cv2
 from PIL import Image
 import cv2
+
+#import pytesseract
 
 NULL_CONTOUR = np.ndarray((0,1,2))
 NULL_BOUNDS  = np.ndarray((0,2))
@@ -66,7 +69,7 @@ def extract_receipt(filename,
                     canny_max_thresh=200,
                     resize_width = 500,
                     ):
-    debug = 0
+    debug = 1
 
     # load the input image from disk
     orig = open_image_cv(filename)
@@ -95,11 +98,12 @@ def extract_receipt(filename,
         output = orig.copy()
         receiptCnt = receiptBounds.reshape(4,1,2).round().astype(int)
         cv2.drawContours(output, [receiptCnt], -1, (0, 255, 0), 10)
-        cv2.imshow("Receipt Outline", imutils.resize(output, width=resize_width))
-        cv2.imshow("Receipt Transform", imutils.resize(receipt, width=resize_width))
         
-        cv2.waitKey()
-        cv2.destroyAllWindows()
+        plt.figure()
+        plot_image_cv2( imutils.resize(output, width=resize_width) )  # Receipt Outline
+        plt.figure()
+        plot_image_cv2( imutils.resize(receipt, width=resize_width) ) # Receipt Transform
+        plt.show()
     return receipt, receiptBounds
 
 if __name__=='__main__':
@@ -117,8 +121,9 @@ if __name__=='__main__':
     
     if len(receipt):
         print('Receipt identified!')
-        cv2.imshow("Receipt", imutils.resize(receipt, width=300))
-        cv2.waitKey()
-        cv2.destroyAllWindows()
+        plt.figure()
+        plot_image_cv2( imutils.resize(receipt, width=300) )
+        plt.show()
     else:
         print('No receipt identified')
+    print('Complete')
