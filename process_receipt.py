@@ -10,6 +10,8 @@ import cv2
 
 #import pytesseract
 
+GLOBAL_DEBUG = 0
+
 NULL_CONTOUR = np.ndarray((0,1,2))
 NULL_BOUNDS  = np.ndarray((0,2))
 NULL_IMAGE   = np.ndarray((0,0,3))
@@ -69,8 +71,6 @@ def extract_receipt(filename,
                     canny_max_thresh=200,
                     resize_width = 500,
                     ):
-    debug = 1
-
     # load the input image from disk
     orig = open_image_cv(filename)
 
@@ -93,7 +93,7 @@ def extract_receipt(filename,
     
     # check to see if we should draw the contour of the receipt on the
     # image and then display it to our screen
-    if debug > 0:
+    if GLOBAL_DEBUG > 0:
         print('Plotting debug plots')
         output = orig.copy()
         receiptCnt = receiptBounds.reshape(4,1,2).round().astype(int)
